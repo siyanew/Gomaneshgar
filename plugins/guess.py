@@ -1,14 +1,15 @@
 import asyncio
 
-from bot import history
 from message import Message
 
 
+def make_guess():
+    return "سعدی"
+
 @asyncio.coroutine
 def run(message, matches, chat_id, step):
-
-    answer = 'حافظ'
-    return Message(chat_id).set_text("{}".format(answer))
+    answer = make_guess()
+    return Message(chat_id).set_text(answer)
 
 
 plugin = {

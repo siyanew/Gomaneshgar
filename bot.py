@@ -97,7 +97,6 @@ def handle_messages(message):
         # Ordinal Treat
 
 
-
 @asyncio.coroutine
 def sender(message):
     yield from  bot.sendMessage(message.chat_id, message.text, parse_mode=message.parse_mode,
