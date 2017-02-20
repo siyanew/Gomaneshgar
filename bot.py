@@ -65,8 +65,9 @@ def get_data_step(message):
     return user_steps[make_usersteps(message)]['data']
 
 @asyncio.coroutine
-def vanahesht(answer, chat_id):
-    yield from sender(Message(chat_id).set_text(">>> {}".format(answer)))
+def vanahesht(answer,confidence):
+    if confidence > 95: # It depends on your AI
+        yield from sender(Message(config['group']).set_text(">>> {}".format(answer)))
 
 
 @asyncio.coroutine
@@ -74,7 +75,7 @@ def handle_messages(message):
     content_type, chat_type, chat_id = telepot.glance(message)
     user_step = make_usersteps(message)
 
-    if chat_id in config['groups']:
+    if chat_id == config['group']:
         if message['text'] in ["خیر","بله"]:
             if user_step in user_steps:
                 for plugin in plugins:
@@ -109,8 +110,8 @@ def sender(message):
 def check_queue():
     while 1:
         while not sender_queue.empty():
-            yield from  sender(sender_queue.get())
-        yield from  asyncio.sleep(0.1)
+            yield from sender(sender_queue.get())
+        yield from asyncio.sleep(0.1)
 
 
 load_plugins()
