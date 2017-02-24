@@ -63,6 +63,9 @@ return Message(chat_id).set_text("Sample Text")
 ### Vanahesht
 if do you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
 
+### Guess
+In `plugins/guess.py` there is a function and its name is `make_guess`. Complete this function and it will send the return value when `حدس` message send or after the twenieth question. 
+
 ### Send Message Without Firing a Event !!
 Your AI can work in other threads (For calculating a new question or sending Vanahesht). If you want Send Message whenever you want just send it into sender_queue :
 ```
