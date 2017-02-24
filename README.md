@@ -26,8 +26,11 @@ sudo pip3 install telepot -U
 sudo pip3 install demjson
 ```
 
-## Set Configs
-Open config.json then add Group, Token and The bot's Username.
+## Set Configs & Run
+Open config.json then add Group, Token and The bot's Username.After that just run this command to run!
+```
+python3 bot.py
+```
 
 ## Description
 This bot is plugins based so you can add a lot of plugins in plugins folder. The plugins structure are shown below.
@@ -61,7 +64,7 @@ Inside run function do everything do you want and then if you want to send messa
 return Message(chat_id).set_text("Sample Text")
 ```
 ### Vanahesht
-if do you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
+If you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
 
 ### Guess
 In `plugins/guess.py` there is a function and its name is `make_guess`. Complete this function and it will send the return value when `حدس` message send or after the twenieth question. 
@@ -73,7 +76,7 @@ sender_queue.put(Message(config['group']).set_text("TEST")
 ```
 
 ### History
-there is a history variable in bot.py that stores all questions with their answer from another bots.
+There is a history variable in bot.py that stores all questions with their answer from another bots.
 
 ### Please
-please feel free to ask any questions here by issues or on telegram via [@Siyanew](https://t.me/siyanew/)
+Please feel free to ask any questions here by issues or on telegram via [@Siyanew](https://t.me/siyanew/)
