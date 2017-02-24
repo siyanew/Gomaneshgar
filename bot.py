@@ -8,12 +8,15 @@ import telepot.aio
 from os import walk
 
 from message import Message
+from plugins.guess import make_guess
 
 WD = dirname(realpath(__file__))
 plugins = []
 config = {}
 user_steps = {}
 sender_queue = Queue()
+twenty = False
+question_count = 0
 
 history = [] # This is a List that stores question in an dictionary contains 3 fields : 1. username 2. question 3. answer
 
@@ -64,6 +67,14 @@ def delete_step(message):
 def get_data_step(message):
     return user_steps[make_usersteps(message)]['data']
 
+def add_count(text):
+    global question_count
+    global twenty
+    if text in ["خیر","بله"]:
+        question_count += 1
+    if question_count % 20 == 0:
+        twenty = True
+
 @asyncio.coroutine
 def vanahesht(answer,confidence):
     if confidence > 95: # It depends on your AI
@@ -76,7 +87,7 @@ def handle_messages(message):
     user_step = make_usersteps(message)
 
     if chat_id == config['group']:
-        if message['text'] in ["خیر","بله"]:
+        if message['text'] in ["خیر","نمی دانم","بله"]:
             if user_step in user_steps:
                 for plugin in plugins:
                     if plugin['name'] == user_steps[user_step]['name']:
@@ -89,7 +100,7 @@ def handle_messages(message):
                 for pattern in plugin['patterns']:
                     if re.search(pattern, message['text'], re.IGNORECASE | re.MULTILINE):
                         matches = re.findall(pattern, message['text'], re.IGNORECASE)
-                        return_value = yield from  plugin['run'](message, matches[0], chat_id, 0)
+                        return_value = yield from plugin['run'](message, matches[0], chat_id, 0)
                         if return_value:
                             yield from sender(return_value)
                         break
@@ -108,10 +119,15 @@ def sender(message):
 
 @asyncio.coroutine
 def check_queue():
+    global twenty
     while 1:
+        if twenty:
+            twenty = False
+            yield from asyncio.sleep(1) # Wait for 1 second to send answer message when the twentieth  question is your turn.
+            sender_queue.put(Message(config['group']).set_text(make_guess()))
         while not sender_queue.empty():
             yield from sender(sender_queue.get())
-        yield from asyncio.sleep(0.1)
+        yield from asyncio.sleep(0.5)
 
 
 load_plugins()

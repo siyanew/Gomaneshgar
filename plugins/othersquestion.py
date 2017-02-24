@@ -1,6 +1,6 @@
 import asyncio
 
-from bot import set_step, delete_step, get_data_step, history
+from bot import set_step, delete_step, get_data_step, history, add_count
 from message import Message
 
 @asyncio.coroutine
@@ -17,6 +17,7 @@ def run(message, matches, chat_id, step):
             pass # Do When answer is yes
         if message['text'] == "خیر":
             pass  # Do When answer is no
+        add_count(message['text'])
 
         # add question and answer to istory list.
         history.append({'username': username + "bot", 'question':question, 'answer':message['text']})
