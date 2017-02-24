@@ -27,7 +27,7 @@ sudo pip3 install demjson
 ```
 
 ## Set Configs
-Open config.json then add Groups, Token and The bot's Username.
+Open config.json then add Group, Token and The bot's Username.
 
 ## Description
 This bot is plugins based so you can add a lot of plugins in plugins folder. The plugins structure are shown below.
@@ -61,7 +61,13 @@ Inside run function do everything do you want and then if you want to send messa
 return Message(chat_id).set_text("Sample Text")
 ```
 ### Vanahesht
-if do you want to answer, you can use `vanahesht("ANSWER",chat_id)` function in bot.py.
+if do you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
+
+### Send Message Without Firing a Event !!
+Your AI can work in other threads (For calculating a new question or sending Vanahesht). If you want Send Message whenever you want just send it into sender_queue :
+```
+sender_queue.put(Message(config['group']).set_text("TEST")
+```
 
 ### History
 there is a history variable in bot.py that stores all questions with their answer from another bots.
