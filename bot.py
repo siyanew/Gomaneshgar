@@ -7,18 +7,19 @@ import telepot
 import telepot.aio
 from os import walk
 
+from aifunctions import make_guess
 from message import Message
-from plugins.guess import make_guess
 
 WD = dirname(realpath(__file__))
 plugins = []
 config = {}
 user_steps = {}
 sender_queue = Queue()
+current_state = {"n": 0, "asker": "", "question": "", "answer": ""}
 twenty = False
-question_count = 0
 
-history = [] # This is a List that stores question in an dictionary contains 3 fields : 1. username 2. question 3. answer
+history = []  # This is a List that stores question in an dictionary contains 3 fields : 1. username 2. question 3. answer
+
 
 def get_config():
     global config
@@ -41,7 +42,7 @@ def load_plugins():
     for (dirpath, dirnames, filenames) in walk("plugins"):
         for pluginName in filenames:
             plugin_dir = join(WD, "plugins", pluginName)
-            values = {"name":pluginName}
+            values = {"name": pluginName}
             with open(plugin_dir, encoding='utf-8') as f:
                 code = compile(f.read(), plugin_dir, 'exec')
                 exec(code, values)
@@ -54,8 +55,8 @@ def make_usersteps(message):
     return message['chat']['id']
 
 
-def set_step(plugin,message,step,data={}):
-    user_steps[make_usersteps(message)] = {"name":plugin['name'], 'step':step, 'data':data}
+def set_step(plugin, message, step, data={}):
+    user_steps[make_usersteps(message)] = {"name": plugin['name'], 'step': step, 'data': data}
 
 
 def delete_step(message):
@@ -67,18 +68,15 @@ def delete_step(message):
 def get_data_step(message):
     return user_steps[make_usersteps(message)]['data']
 
-def add_count(text):
-    global question_count
+
+def set_twenty(b):
     global twenty
-    if text in ["خیر","بله"]:
-        question_count += 1
-    if question_count % 20 == 0:
-        twenty = True
+    twenty = b
+
 
 @asyncio.coroutine
-def vanahesht(answer,confidence):
-    if confidence > 95: # It depends on your AI
-        yield from sender(Message(config['group']).set_text(">>> {}".format(answer)))
+def vanahesht(answer):
+    yield from sender(Message(config['group']).set_text(">>> {}".format(answer)))
 
 
 @asyncio.coroutine
@@ -87,13 +85,13 @@ def handle_messages(message):
     user_step = make_usersteps(message)
 
     if chat_id == config['group']:
-        if message['text'] in ["خیر","نمی دانم","بله"]:
+        if message['text'] in ["خیر", "نمی‌دانم", "بله", "نمیدانم", "نمی دانم"]:
             if user_step in user_steps:
                 for plugin in plugins:
                     if plugin['name'] == user_steps[user_step]['name']:
                         return_value = yield from  plugin['run'](message, [""], chat_id, user_steps[user_step]['step'])
                         if return_value:
-                            yield from  sender(return_value)
+                            yield from sender(return_value)
                         break
         elif 'text' in message:
             for plugin in plugins:
@@ -103,7 +101,6 @@ def handle_messages(message):
                         return_value = yield from plugin['run'](message, matches[0], chat_id, 0)
                         if return_value:
                             yield from sender(return_value)
-                        break
     else:
         pass
         # Ordinal Treat
@@ -112,10 +109,11 @@ def handle_messages(message):
 @asyncio.coroutine
 def sender(message):
     yield from  bot.sendMessage(message.chat_id, message.text, parse_mode=message.parse_mode,
-                                   disable_web_page_preview=message.disable_web_page_preview,
-                                   disable_notification=message.disable_notification,
-                                   reply_to_message_id=message.reply_to_message_id,
-                                   reply_markup=message.reply_markup)
+                                disable_web_page_preview=message.disable_web_page_preview,
+                                disable_notification=message.disable_notification,
+                                reply_to_message_id=message.reply_to_message_id,
+                                reply_markup=message.reply_markup)
+
 
 @asyncio.coroutine
 def check_queue():
@@ -123,11 +121,10 @@ def check_queue():
     while 1:
         if twenty:
             twenty = False
-            yield from asyncio.sleep(1) # Wait for 1 second to send answer message when the twentieth  question is your turn.
             sender_queue.put(Message(config['group']).set_text(make_guess()))
         while not sender_queue.empty():
             yield from sender(sender_queue.get())
-        yield from asyncio.sleep(0.5)
+        yield from asyncio.sleep(0.1)
 
 
 load_plugins()

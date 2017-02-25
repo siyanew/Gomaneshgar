@@ -1,10 +1,8 @@
 import asyncio
 
+from aifunctions import make_guess
 from message import Message
 
-
-def make_guess():
-    return "سعدی"
 
 @asyncio.coroutine
 def run(message, matches, chat_id, step):

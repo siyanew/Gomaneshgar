@@ -41,7 +41,7 @@ from message import Message
 @asyncio.coroutine
 def run(message, matches, chat_id, step):
      
-    return Message(chat_id).set_text("The Championship is started.", parse_mode="Markdown")
+    return Message(chat_id).set_text("The Championship is started.")
 
 
 plugin = {
@@ -59,6 +59,14 @@ patterns --> some regex in a list to fire this plugin to run ...
 Inside run function do everything do you want and then if you want to send message just return this object :
 ```
 return Message(chat_id).set_text("Sample Text")
+```
+### aifunctions.py
+This file contains 4 function that Your AI should implement there :
+```
+choose_question --> Will ask question when your turn up ...
+make_guess --> Will Find a guess ...
+has_any_point_for_direct --> if it is true, it will ask a Direct Question with make_guess() return Value else it will ask from choose_question()
+has_any_point_for_vanahesht --> if it is true, it will send Vanahesht message with make_guess()
 ```
 ### Vanahesht
 if do you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
