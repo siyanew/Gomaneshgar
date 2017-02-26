@@ -9,7 +9,7 @@ def make_guess():
 
 
 def has_any_point_for_direct():
-    # If it is true , The bot will answer the Direct Question
+    # If it is true , The bot will message a Direct Question
     return False
 
 
