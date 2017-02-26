@@ -72,7 +72,7 @@ has_any_point_for_direct --> if it is true, it will ask a Direct Question with m
 has_any_point_for_vanahesht --> if it is true, it will send Vanahesht message with make_guess()
 ```
 ### Vanahesht
-If you want to answer, you can use `vanahesht("ANSWER",confident)` function in bot.py.
+If you want to answer, you can use `vanahesht("ANSWER")` function in bot.py.
 
 ### Guess
 In `plugins/guess.py` there is a function and its name is `make_guess`. Complete this function and it will send the return value when `حدس` message send or after the twenieth question. 
