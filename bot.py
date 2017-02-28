@@ -7,7 +7,7 @@ import telepot
 import telepot.aio
 from os import walk
 
-from aifunctions import make_guess
+from aifunctions import init
 from message import Message
 
 WD = dirname(realpath(__file__))
@@ -16,7 +16,6 @@ config = {}
 user_steps = {}
 sender_queue = Queue()
 current_state = {"n": 0, "asker": "", "question": "", "answer": ""}
-twenty = False
 is_run = False
 
 history = []  # This is a List that stores question in an dictionary contains 3 fields : 1. username 2. question 3. answer
@@ -70,13 +69,10 @@ def get_data_step(message):
     return user_steps[make_usersteps(message)]['data']
 
 
-def set_twenty(b):
-    global twenty
-    twenty = b
-
 def set_run(s):
     global is_run
     is_run = s
+
 
 @asyncio.coroutine
 def vanahesht(answer):
@@ -97,7 +93,8 @@ def handle_messages(message):
                 if user_step in user_steps:
                     for plugin in plugins:
                         if plugin['name'] == user_steps[user_step]['name']:
-                            return_value = yield from  plugin['run'](message, [""], chat_id, user_steps[user_step]['step'])
+                            return_value = yield from  plugin['run'](message, [""], chat_id,
+                                                                     user_steps[user_step]['step'])
                             if return_value:
                                 yield from sender(return_value)
                             break
@@ -110,7 +107,7 @@ def handle_messages(message):
                             if return_value:
                                 yield from sender(return_value)
 
-    # Ordinal Treat
+                                # Ordinal Treat
 
 
 @asyncio.coroutine
@@ -124,16 +121,14 @@ def sender(message):
 
 @asyncio.coroutine
 def check_queue():
-    global twenty
     while 1:
-        if twenty:
-            twenty = False
-            sender_queue.put(Message(config['group']).set_text(make_guess()))
         while not sender_queue.empty():
             yield from sender(sender_queue.get())
         yield from asyncio.sleep(0.1)
 
 
+
+init(current_state,history)
 load_plugins()
 bot = telepot.aio.Bot(config['token'])
 answerer = telepot.aio.helper.Answerer(bot)

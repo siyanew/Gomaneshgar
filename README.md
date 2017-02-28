@@ -83,6 +83,11 @@ Your AI can work in other threads (For calculating a new question or sending Van
 sender_queue.put(Message(config['group']).set_text("TEST")
 ```
 
+### Test
+Just rename `aifunctions-sample.py` to `aifunctions.py` to Test it. 
+
+It choose a random question and answer and for question number 101 ask a direct question and for question number 999 message a vanahesht.
+
 ### History
 There is a history variable in bot.py that stores all questions with their answer from another bots.
 
