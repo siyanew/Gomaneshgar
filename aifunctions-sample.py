@@ -20,20 +20,24 @@ def init(cs,h):
 
 
 def choose_question():
+    # Just Choose a Random Question
     return random.choice(question_list)
 
 
 def make_guess():
+    # Just Choose a Random Answer
     return random.choice(words_list)
 
 
 def has_any_point_for_direct():
+    # It's jsut for test and Debug and called in 101st question
     if current_state['n'] == 101:
         return True
     return False
 
 
 def has_any_point_for_vanahesht():
+    # It's jsut for test and Debug and called in 999th question
     if current_state['n'] == 999:
         return True
     return False
