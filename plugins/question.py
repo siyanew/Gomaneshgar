@@ -14,7 +14,7 @@ def run(message, matches, chat_id, step):
         english_trans = str.maketrans(persian_numbers, english_numbers)
         question_number = matches[0].translate(english_trans)
 
-        if matches[1] == config['username']:
+        if matches[1].lower() == config['username'].lower():
             current_state['n'] = int(question_number)
 
             if has_any_point_for_direct():
@@ -61,5 +61,5 @@ def run(message, matches, chat_id, step):
 plugin = {
     "name": "question",
     "run": run,
-    "patterns": ["([۱۲۳۴۵۶۷۸۹۰]+)\\. @(.+bot)"]
+    "patterns": ["([۱۲۳۴۵۶۷۸۹۰]+)\\. @(.+)"]
 }
