@@ -7,7 +7,7 @@ import telepot
 import telepot.aio
 from os import walk
 
-from aifunctions import init
+from aifunctions import inits
 from message import Message
 
 WD = dirname(realpath(__file__))
@@ -128,8 +128,9 @@ def check_queue():
 
 
 
-init(current_state,history)
 load_plugins()
+inits(current_state,history)
+
 bot = telepot.aio.Bot(config['token'])
 answerer = telepot.aio.helper.Answerer(bot)
 

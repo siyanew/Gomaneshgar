@@ -14,7 +14,7 @@ def run(message, matches, chat_id, step):
         english_trans = str.maketrans(persian_numbers, english_numbers)
         question_number = matches[0].translate(english_trans)
 
-        if matches[1] == config['username']:
+        if matches[1].lower() == config['username'].lower():
             current_state['n'] = int(question_number)
 
             if has_any_point_for_direct():
@@ -31,8 +31,9 @@ def run(message, matches, chat_id, step):
 
         else:
 
-            set_step(plugin, message, 1, {'question_number': int(question_number), 'self': False})
+            set_step({"name":"otherquestion"}, message, 1, {'question_number': int(question_number), 'self': False})
             current_state['n'] = int(question_number)
+            current_state['asker'] = matches[1].lower()
 
     elif step == 1:
         if get_data_step(message)['self']:
@@ -48,9 +49,6 @@ def run(message, matches, chat_id, step):
             if has_any_point_for_vanahesht():
                 yield from vanahesht(make_guess())
 
-        else:
-            current_state['answer'] = message['text']
-            history.append(copy.deepcopy(current_state))
 
         if message['text'] in ["بله", "خیر"]:
             if current_state['n'] % 20 == 0:
@@ -61,5 +59,5 @@ def run(message, matches, chat_id, step):
 plugin = {
     "name": "question",
     "run": run,
-    "patterns": ["([۱۲۳۴۵۶۷۸۹۰]+)\\. @(.+bot)"]
+    "patterns": ["([۱۲۳۴۵۶۷۸۹۰]+)\\. @(.+)"]
 }
