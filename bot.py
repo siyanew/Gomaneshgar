@@ -82,32 +82,33 @@ def vanahesht(answer):
 @asyncio.coroutine
 def handle_messages(message):
     content_type, chat_type, chat_id = telepot.glance(message)
-    user_step = make_usersteps(message)
-    if message['text'] == "آغاز":
-        set_run(True)
-    if message['text'] == "پایان":
-        set_run(False)
-    if is_run:
-        if chat_id == config['group']:
-            if message['text'] in ["خیر", "نمی‌دانم", "بله", "نمیدانم", "نمی دانم"]:
-                if user_step in user_steps:
+    if 'text' in message:
+        user_step = make_usersteps(message)
+        if message['text'] == "آغاز":
+            set_run(True)
+        if message['text'] == "پایان":
+            set_run(False)
+        if is_run:
+            if chat_id == config['group']:
+                if message['text'] in ["خیر", "نمی‌دانم", "بله", "نمیدانم", "نمی دانم"]:
+                    if user_step in user_steps:
+                        for plugin in plugins:
+                            if plugin['name'] == user_steps[user_step]['name']:
+                                return_value = yield from  plugin['run'](message, [""], chat_id,
+                                                                         user_steps[user_step]['step'])
+                                if return_value:
+                                    yield from sender(return_value)
+                                break
+                elif 'text' in message:
                     for plugin in plugins:
-                        if plugin['name'] == user_steps[user_step]['name']:
-                            return_value = yield from  plugin['run'](message, [""], chat_id,
-                                                                     user_steps[user_step]['step'])
-                            if return_value:
-                                yield from sender(return_value)
-                            break
-            elif 'text' in message:
-                for plugin in plugins:
-                    for pattern in plugin['patterns']:
-                        if re.search(pattern, message['text'], re.IGNORECASE | re.MULTILINE):
-                            matches = re.findall(pattern, message['text'], re.IGNORECASE)
-                            return_value = yield from plugin['run'](message, matches[0], chat_id, 0)
-                            if return_value:
-                                yield from sender(return_value)
+                        for pattern in plugin['patterns']:
+                            if re.search(pattern, message['text'], re.IGNORECASE | re.MULTILINE):
+                                matches = re.findall(pattern, message['text'], re.IGNORECASE)
+                                return_value = yield from plugin['run'](message, matches[0], chat_id, 0)
+                                if return_value:
+                                    yield from sender(return_value)
 
-                                # Ordinal Treat
+                                    # Ordinal Treat
 
 
 @asyncio.coroutine
