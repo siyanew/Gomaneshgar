@@ -30,8 +30,6 @@ def run(message, matches, chat_id, step):
             return Message(chat_id).set_text(question)
 
         else:
-
-            set_step({"name":"otherquestion"}, message, 1, {'question_number': int(question_number), 'self': False})
             current_state['n'] = int(question_number)
             current_state['asker'] = matches[1].lower()
 
