@@ -8,12 +8,11 @@ from message import Message
 
 @asyncio.coroutine
 def run(message, matches, chat_id, step):
+    persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
+    english_numbers = '1234567890'
+    english_trans = str.maketrans(persian_numbers, english_numbers)
+    question_number = matches[0].translate(english_trans)
     if step == 0:
-        persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-        english_numbers = '1234567890'
-        english_trans = str.maketrans(persian_numbers, english_numbers)
-        question_number = matches[0].translate(english_trans)
-
         if matches[1].lower() == config['username'].lower():
             current_state['n'] = int(question_number)
 
