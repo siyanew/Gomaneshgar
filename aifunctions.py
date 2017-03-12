@@ -4,7 +4,7 @@ question_list = []
 words_list = []
 
 
-def init(cs,h):
+def inits(cs,h):
     global current_state
     global history
     current_state = cs
